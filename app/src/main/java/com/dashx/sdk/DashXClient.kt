@@ -444,7 +444,7 @@ class DashXClient(
         track(INTERNAL_EVENT_APP_SCREEN_VIEWED, properties)
     }
 
-    private fun subscribe() {
+    private fun subscribe(token: String) {
         if (deviceToken == null || identityToken == null) {
             DashXLog.d(tag,
                 "Subscribe called with deviceToken: $deviceToken and identityToken: $identityToken")
@@ -455,7 +455,15 @@ class DashXClient(
             uid!!,
             Input.fromNullable("Android"),
             ContactKind.ANDROID,
-            deviceToken!!
+            Input.fromNullable(token),
+            Input.fromNullable(null),
+            os_name: String
+            os_version: String
+            device_model: String
+            device_manufacturer: String
+            device_uid: String
+            device_advertising_uid: String
+            is_device_ad_tracking_enabled: Boolean
         )
         val subscribeContactMutation = SubscribeContactMutation(subscribeContactInput)
 
