@@ -467,8 +467,7 @@ class DashXClient(
             editor.apply()
         }
 
-        val version = Build.VERSION()
-        DashXLog.d(tag, "Version: $version")
+        DashXLog.d(tag, "Version: ${Build.VERSION.BASE_OS}, ${Build.VERSION.CODENAME}, ${Build.VERSION.SDK_INT}, ${Build.MANUFACTURER}, ${Build.MODEL}, ${Build.VERSION.RELEASE}")
 
         when {
             getDashXSharedPreferences(context!!).getString(
