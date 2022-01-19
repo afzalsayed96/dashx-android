@@ -3,6 +3,7 @@ package com.dashx.sdk
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
+import android.provider.Settings
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.CustomTypeAdapter
@@ -467,7 +468,9 @@ class DashXClient(
             editor.apply()
         }
 
-        DashXLog.d(tag, "Version: ${Build.VERSION.BASE_OS}, ${Build.VERSION.CODENAME}, ${Build.VERSION.SDK_INT}, ${Build.MANUFACTURER}, ${Build.MODEL}, ${Build.VERSION.RELEASE}")
+        val name = Settings.Global.getString(context?.getContentResolver(), Settings.Global.DEVICE_NAME) ?: Settings.Secure.getString(context?.getContentResolver(), "bluetooth_name")
+
+        DashXLog.d(tag, "Name: $name")
 
         when {
             getDashXSharedPreferences(context!!).getString(
@@ -475,17 +478,16 @@ class DashXClient(
                 null
             ) != deviceToken
             -> {
-                val baseOs = Build.VERSION.BASE_OS
-                val codeName = Build.VERSION.CODENAME
-                val sdk = Build.VERSION.SDK_INT
-
                 val subscribeContactInput = SubscribeContactInput(
                     accountUid = Input.fromNullable(uid),
                     accountAnonymousUid = Input.fromNullable(anonymousUid!!),
-                    name = Input.fromNullable("Android"),
+                    name = Input.fromNullable(name),
                     kind = ContactKind.ANDROID,
                     value = deviceToken!!,
-                    osName = Input.fromNullable("$baseOs $codeName $sdk"),
+                    osName = Input.fromNullable("Android"),
+                    osVersion = Input.fromNullable(Build.VERSION.RELEASE_OR_CODENAME),
+                    deviceManufacturer = Input.fromNullable(Build.MANUFACTURER),
+                    deviceModel = Input.fromNullable(Build.MODEL)
                 )
                 val subscribeContactMutation = SubscribeContactMutation(subscribeContactInput)
 
