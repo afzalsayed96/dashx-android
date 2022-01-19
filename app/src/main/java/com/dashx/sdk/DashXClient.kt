@@ -467,18 +467,26 @@ class DashXClient(
             editor.apply()
         }
 
+        val version = Build.VERSION()
+        DashXLog.d(tag, "Version: $version")
+
         when {
             getDashXSharedPreferences(context!!).getString(
                 SHARED_PREFERENCES_KEY_DEVICE_TOKEN,
                 null
             ) != deviceToken
             -> {
+                val baseOs = Build.VERSION.BASE_OS
+                val codeName = Build.VERSION.CODENAME
+                val sdk = Build.VERSION.SDK_INT
+
                 val subscribeContactInput = SubscribeContactInput(
                     accountUid = Input.fromNullable(uid),
                     accountAnonymousUid = Input.fromNullable(anonymousUid!!),
                     name = Input.fromNullable("Android"),
                     kind = ContactKind.ANDROID,
-                    value = deviceToken!!
+                    value = deviceToken!!,
+                    osName = Input.fromNullable("$baseOs $codeName $sdk"),
                 )
                 val subscribeContactMutation = SubscribeContactMutation(subscribeContactInput)
 
